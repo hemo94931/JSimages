@@ -19,7 +19,7 @@ export default {
       case '/bing-images':
         return handleBingImagesRequest();
       case '/delete-images':
-        return await handleDeleteImagesRequest(request, DATABASE, USERNAME, PASSWORD);
+        return await handleDeleteImagesRequest(request, DATABASE, USERNAME, PASSWORD, R2_BUCKET);
       default:
         return await handleImageRequest(request, DATABASE, R2_BUCKET);
     }
@@ -163,7 +163,7 @@ async function handleRootRequest(request, USERNAME, PASSWORD, enableAuth) {
               <div id="cacheContent" style="display: none;"></div>
           </form>
       </div>
-      <p class="project-link">项目开源于 GitHub - <a href="https://github.com/0-RTT/JSimages" target="_blank" rel="noopener noreferrer">0-RTT/JSimages</a></p>
+      <p class="project-link">项目开源于 GitHub - <a href="https://github.com/0-RTT/telegraph" target="_blank" rel="noopener noreferrer">0-RTT/telegraph</a></p>
       <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
       <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-fileinput/5.2.7/js/fileinput.min.js" type="application/javascript"></script>
       <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-fileinput/5.2.7/js/locales/zh.min.js" type="application/javascript"></script>
@@ -947,7 +947,7 @@ async function handleBingImagesRequest(request) {
   return response;
 }
 
-async function handleDeleteImagesRequest(request, DATABASE, USERNAME, PASSWORD) {
+async function handleDeleteImagesRequest(request, DATABASE, USERNAME, PASSWORD, R2_BUCKET) {
   if (!authenticate(request, USERNAME, PASSWORD)) {
     return new Response('Unauthorized', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="Admin"' } });
   }
@@ -971,6 +971,10 @@ async function handleDeleteImagesRequest(request, DATABASE, USERNAME, PASSWORD) 
       if (cachedResponse) {
         await cache.delete(cacheKey);
       }
+      const urlParts = url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const r2Key = fileName.split('.')[0];
+      await R2_BUCKET.delete(r2Key);
     }
     return new Response(JSON.stringify({ message: '删除成功' }), { status: 200 });
   } catch (error) {
