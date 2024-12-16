@@ -18,7 +18,8 @@
 ## 更新日志
 
 > **最近更新**: 2024-12-16
-> -修改自 [0-RTT/telegraph](https://github.com/0-RTT/telegraph)，使用R2进行储存。
+> - 同步删除文件数据
+> - 修改自 [0-RTT/telegraph](https://github.com/0-RTT/telegraph)，使用R2进行储存。
 
 <details>
 <summary>历史更新记录</summary>
