@@ -18,19 +18,20 @@
 ## 更新日志
 
 > **最近更新**: 2024-12-16
-> - 同步删除文件数据
-> - 修改自 [0-RTT/telegraph](https://github.com/0-RTT/telegraph)，使用R2进行储存。
+> - 同步删除 R2 储存的图片
+> - 修改自 [0-RTT/telegraph](https://github.com/0-RTT/telegraph)，使用 R2 进行储存。
 
 <details>
 <summary>历史更新记录</summary>
 
 ### 2024-12-16
+- 同步删除 R2 储存的图片
 - 修改自 [0-RTT/telegraph](https://github.com/0-RTT/telegraph)
 
 </details>
 
 ## 部署步骤
-> ⚠️使用R2储存，建议配置好缓存规则和开启访客验证，防止被刷导致扣费！
+> ⚠️ 使用 R2 储存，建议配置好缓存规则并开启访客验证，以防止被刷导致扣费！
 ### 1. 环境变量说明
 需要在 Cloudflare Workers 中配置以下环境变量:
 
@@ -46,7 +47,7 @@
 
 ### 2. 创建 R2 存储桶
 1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. 进入 `R2` → `创建存储桶`
+2. 进入 `R2对象储存` → `创建存储桶`
 3. 设置存储桶名称和区域
 4. 保存存储桶的名称以便后续使用
 
@@ -54,12 +55,12 @@
 1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
 2. 进入 `Workers & Pages` → `D1 SQL 数据库`
 3. 点击 `创建` 创建数据库
-   - 数据库名称可自定义，例如`images`
+   - 数据库名称可自定义，例如 `images`
    - 建议选择数据库位置为 `亚太地区`，可以获得更好的访问速度
 4. 创建数据表:
    - 点击数据库名称进入详情页
    - 选择 `控制台` 标签
-   - 执行下 SQL 语句:
+   - 执行以下 SQL 语句:
 ```sql
 CREATE TABLE media (
     url TEXT PRIMARY KEY
@@ -79,19 +80,19 @@ CREATE TABLE media (
 2. 点击 `添加` 添加变量
 3. 点击 `部署`
 
-### 6. 绑定数据库和R2储存
+### 6. 绑定数据库和 R2 储存
 1. 在 Worker 设置页面找到 `设置` → `绑定`
 2. 点击 `添加`
 3. 选择 `D1数据库`
 4. 设置变量名为 `DATABASE`
 5. 选择之前创建的数据库
 6. 点击 `部署`
-7. 重复上述步骤绑定R2储存，变量名为`R2_BUCKET`
+7. 重复上述步骤绑定 R2 储存，变量名为 `R2_BUCKET`
 
 ### 7. 绑定域名
 1. 在 Worker 的 `设置` → `域和路由`
 2. 点击 `添加` → `自定义域`
-3. 输入你在Cloudflare绑定的域名
+3. 输入你在 Cloudflare 绑定的域名
 4. 点击 `添加域`
 5. 等待域名生效
 
@@ -99,6 +100,13 @@ CREATE TABLE media (
 1. 进入 Worker 的编辑页面
 2. 将 `_worker.js` 的完整代码复制粘贴到编辑器中
 3. 点击 `部署`
+
+### 9. 配置缓存
+1. 进入 Cloudflare Dashboard
+2. 进入 `网站` → `选择你的自定义域名` → `缓存` → `Cache Rules` → `创建缓存规则`
+3. 选择 `缓存所有内容模板`
+4. 设置 `边缘 TTL` → `忽略缓存控制标头，使用此 TTL` → `30天`（根据需要设置）
+5. 点击 `部署`
 
 ## 开源协议
 
