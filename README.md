@@ -1,5 +1,5 @@
 # 介绍
-基于 Cloudflare R2 储存的图床服务
+基于 Cloudflare R2 储存的图床/视频床服务
 
 ## 功能特点
 
