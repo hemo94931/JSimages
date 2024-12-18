@@ -86,7 +86,7 @@ CREATE TABLE media (
 
 ### 5. 配置变量和机密
 1. 在 Worker 的 `设置` → `变量和机密` 中
-2. 根据需要逐个点击 `添加` 添加以下变量
+2. 点击 `添加` 添加以下变量
    - DOMAIN
    - USERNAME
    - PASSWORD
@@ -97,7 +97,7 @@ CREATE TABLE media (
 
 ### 6. 绑定 D1 数据库和 R2 储存
 1. 在 Worker 设置页面找到 `设置` → `绑定`
-2. 点击 `添加` 添加以下变量名称
+2. 点击 `添加` 添加以下变量
    - DATABASE
    - R2_BUCKET 
 3. 点击 `部署`
