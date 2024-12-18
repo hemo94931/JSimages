@@ -8,6 +8,8 @@ export default {
     const adminPath = env.ADMIN_PATH;
     const enableAuth = env.ENABLE_AUTH === 'true';
     const R2_BUCKET = env.R2_BUCKET;
+    const maxSizeMB = env.MAX_SIZE_MB ? parseInt(env.MAX_SIZE_MB, 10) : 10;
+    const maxSize = maxSizeMB * 1024 * 1024;
 
     switch (pathname) {
       case '/':
@@ -15,7 +17,7 @@ export default {
       case `/${adminPath}`:
         return await handleAdminRequest(DATABASE, request, USERNAME, PASSWORD);
       case '/upload':
-        return request.method === 'POST' ? await handleUploadRequest(request, DATABASE, enableAuth, USERNAME, PASSWORD, domain, R2_BUCKET) : new Response('Method Not Allowed', { status: 405 });
+        return request.method === 'POST' ? await handleUploadRequest(request, DATABASE, enableAuth, USERNAME, PASSWORD, domain, R2_BUCKET, maxSize) : new Response('Method Not Allowed', { status: 405 });
       case '/bing-images':
         return handleBingImagesRequest();
       case '/delete-images':
@@ -863,11 +865,15 @@ async function fetchMediaData(DATABASE) {
   return mediaData.map(({ url }) => ({ url }));
 }
 
-async function handleUploadRequest(request, DATABASE, enableAuth, USERNAME, PASSWORD, domain, R2_BUCKET) {
+async function handleUploadRequest(request, DATABASE, enableAuth, USERNAME, PASSWORD, domain, R2_BUCKET, maxSize) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
     if (!file) throw new Error('缺少文件');
+    
+    if (file.size > maxSize) {
+      return new Response(JSON.stringify({ error: `文件大小超过${maxSize / (1024 * 1024)}MB限制` }), { status: 413, headers: { 'Content-Type': 'application/json' } });
+    }
     if (enableAuth && !authenticate(request, USERNAME, PASSWORD)) {
       return new Response('Unauthorized', { status: 401, headers: { 'WWW-Authenticate': 'Basic realm="Admin"' } });
     }
