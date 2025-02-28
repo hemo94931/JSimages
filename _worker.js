@@ -109,6 +109,20 @@ async function handleRootRequest(request, USERNAME, PASSWORD, enableAuth) {
       #viewCacheBtn:hover {
           color: rgba(0, 0, 0, 0.4);
       }
+      #deleteCacheBtn {
+          position: absolute;
+          top: 10px;
+          right: 90px;
+          background: none;
+          border: none;
+          color: rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+          font-size: 24px;
+          transition: color 0.3s ease;
+      }
+      #deleteCacheBtn:hover {
+          color: rgba(0, 0, 0, 0.4);
+      }    
       #compressionToggleBtn {
           position: absolute;
           top: 10px;
@@ -162,6 +176,7 @@ async function handleRootRequest(request, USERNAME, PASSWORD, enableAuth) {
   <div class="background" id="background"></div>
   <div class="card">
       <div class="title">JSimages</div>
+      <button type="button" class="btn" id="deleteCacheBtn" title="删除历史记录"><i class="fas fa-trash"></i></button>
       <button type="button" class="btn" id="viewCacheBtn" title="查看历史记录"><i class="fas fa-clock"></i></button>
       <button type="button" class="btn" id="compressionToggleBtn"><i class="fas fa-compress"></i></button>
       <div class="card-body">
@@ -470,6 +485,16 @@ async function handleRootRequest(request, USERNAME, PASSWORD, enableAuth) {
           }
         });
     
+        $('#deleteCacheBtn').on('click', function() {
+          localStorage.removeItem('uploadCache');
+
+          if (isCacheVisible) {
+            const cacheContent = $('#cacheContent');
+            cacheContent.empty();
+            cacheContent.append('<div>还没有记录哦！</div>').show();
+          }
+        });
+
         $(document).on('click', '.cache-item', function() {
           const url = $(this).data('url');
           originalImageURLs = [];
